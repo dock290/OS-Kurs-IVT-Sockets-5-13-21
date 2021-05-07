@@ -32,7 +32,7 @@ namespace filemanager
 
         private readonly Minimal minimalForm;
 
-        private readonly FileManager fileManager;
+        public readonly FileManager fileManager;
 
         /// <summary>
         /// Список путей к элементам, которые сохранены для последующего копирования
@@ -60,7 +60,7 @@ namespace filemanager
             fileManager = new FileManager();
 
             InitializeComponent();
-            minimalForm = new Minimal(fileManager);
+            minimalForm = new Minimal(this);
         }
 
         /// <summary>
@@ -568,6 +568,17 @@ namespace filemanager
             {
                 Cursor = directoryContentListView.Cursor = Cursors.Arrow;
             }
+        }
+
+        private void minimalFunctionalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            minimalForm.Show();
+            minimalForm.Focus();
+        }
+
+        private void mainFunctionalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

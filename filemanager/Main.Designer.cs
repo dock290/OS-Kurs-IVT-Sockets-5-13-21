@@ -57,6 +57,8 @@
             this.recycleContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.recycleRestoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recycleDeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.minimalFunctionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mainFunctionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainContextMenu.SuspendLayout();
             this.mainMenuStrip.SuspendLayout();
             this.itemContextMenu.SuspendLayout();
@@ -174,7 +176,9 @@
             this.mainMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutProgramToolStripMenuItem,
-            this.utilsToolStripMenuItem});
+            this.utilsToolStripMenuItem,
+            this.minimalFunctionalToolStripMenuItem,
+            this.mainFunctionalToolStripMenuItem});
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
             this.mainMenuStrip.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
@@ -309,6 +313,20 @@
             this.recycleDeleteMenuItem.Text = "Удалить безвозвратно";
             this.recycleDeleteMenuItem.Click += new System.EventHandler(this.recycleDeleteMenuItem_Click);
             // 
+            // minimalFunctionalToolStripMenuItem
+            // 
+            this.minimalFunctionalToolStripMenuItem.Name = "minimalFunctionalToolStripMenuItem";
+            this.minimalFunctionalToolStripMenuItem.Size = new System.Drawing.Size(174, 20);
+            this.minimalFunctionalToolStripMenuItem.Text = "Минимальный функционал";
+            this.minimalFunctionalToolStripMenuItem.Click += new System.EventHandler(this.minimalFunctionalToolStripMenuItem_Click);
+            // 
+            // mainFunctionalToolStripMenuItem
+            // 
+            this.mainFunctionalToolStripMenuItem.Name = "mainFunctionalToolStripMenuItem";
+            this.mainFunctionalToolStripMenuItem.Size = new System.Drawing.Size(147, 20);
+            this.mainFunctionalToolStripMenuItem.Text = "Основной функционал";
+            this.mainFunctionalToolStripMenuItem.Click += new System.EventHandler(this.mainFunctionalToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -367,6 +385,8 @@
         private System.Windows.Forms.ContextMenuStrip recycleContextMenu;
         private System.Windows.Forms.ToolStripMenuItem recycleRestoreMenuItem;
         private System.Windows.Forms.ToolStripMenuItem recycleDeleteMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem minimalFunctionalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mainFunctionalToolStripMenuItem;
     }
 }
 
