@@ -23,8 +23,6 @@ namespace MainFunctional
 
         private void mainFunctionalForm_Load(object sender, EventArgs e)
         {
-            Focus();
-
             int i = 1;
             PerformanceCounterCategory pfc = new PerformanceCounterCategory("Processor");
             foreach (string instanceName in pfc.GetInstanceNames())
@@ -42,11 +40,14 @@ namespace MainFunctional
             performanceCounterList.Sort((pc1, pc2) => pc1.InstanceName.CompareTo(pc2.InstanceName));
 
             updateTimer.Start();
+
+            Focus();
         }
 
         private void updateTimer_Tick(object sender, EventArgs e)
         {
-            cpuUsageTextBox.Text = $"{currentProcess.TotalProcessorTime.TotalMilliseconds} мс";
+            cpuUsageValueLabel.Text = $"{currentProcess.TotalProcessorTime.TotalMilliseconds} мс";
+            workingSetValueLabel.Text = $"{currentProcess.WorkingSet64} байт";
 
             int i = 0;
             foreach (PerformanceCounter pc in performanceCounterList)
