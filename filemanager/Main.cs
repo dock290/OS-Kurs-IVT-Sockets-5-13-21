@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Windows.Forms;
-using System.Security.Principal;
-using System.Security.AccessControl;
 using System.Diagnostics;
-using System.Management;
-using System.Security.Policy;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace filemanager
 {
@@ -70,7 +63,6 @@ namespace filemanager
             {
                 string mainFunctionalProcessPath = Path.Combine(fileManager.SYSTEM_PATH, "MainFunctional.exe");
                 mainFunctional.startMainFunctionalProcess(mainFunctionalProcessPath);
-                updateTimer.Start();
             }
             catch (Exception ex)
             {
@@ -192,6 +184,20 @@ namespace filemanager
 
         private void Main_Load(object sender, EventArgs e)
         {
+            try
+            {
+                mainFunctional.connectToMainFunctionalProcess();
+                mainFunctional.sendMessage("Show=false\n");
+                mainFunctional.sendMessage($"Cores={Environment.ProcessorCount}\n");
+                updateTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                showErrorMessage("Не удалось подключиться к процессу основного функционала");
+                Application.Exit();
+            }
+
             updateUI();
         }
 
@@ -594,7 +600,7 @@ namespace filemanager
 
         private void mainFunctionalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mainFunctional.sendMessage("SHOW\n");
+            mainFunctional.sendMessage("Show=true\n");
         }
 
         private void updateTimer_Tick(object sender, EventArgs e)
@@ -638,6 +644,11 @@ namespace filemanager
             {
                 mainFunctional.mainFunctionalProcess.Kill();
             }
+        }
+
+        private void Main_Shown(object sender, EventArgs e)
+        {
+
         }
     }
 
@@ -706,8 +717,10 @@ namespace filemanager
             string relativePath = Utils.GetRelativePath(ROOT_PATH, itemPath);
             string newPath = Path.Combine(RECYCLE_PATH, relativePath);
 
-            List<KeyValuePair<string, string>> oldPathNewPaths = new List<KeyValuePair<string, string>>();
-            oldPathNewPaths.Add(new KeyValuePair<string, string>(itemPath, newPath));
+            List<KeyValuePair<string, string>> oldPathNewPaths = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>(itemPath, newPath)
+            };
             cutPaste(oldPathNewPaths);
         }
 
@@ -716,8 +729,10 @@ namespace filemanager
             string relativePath = Utils.GetRelativePath(RECYCLE_PATH, itemPath);
             string newPath = Path.Combine(ROOT_PATH, relativePath);
 
-            List<KeyValuePair<string, string>> oldPathNewPaths = new List<KeyValuePair<string, string>>();
-            oldPathNewPaths.Add(new KeyValuePair<string, string>(itemPath, newPath));
+            List<KeyValuePair<string, string>> oldPathNewPaths = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>(itemPath, newPath)
+            };
             cutPaste(oldPathNewPaths);
         }
 
@@ -1257,15 +1272,23 @@ namespace filemanager
 
         public readonly Process mainFunctionalProcess = new Process();
 
+        private readonly IPEndPoint ipPoint;
+        private readonly Socket socket;
+
         public MainFunctionalInteraction()
         {
+            ipPoint = new IPEndPoint(Dns.GetHostAddresses("localhost")[0], 8000);
+            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
             PerformanceCounterCategory pfc = new PerformanceCounterCategory("Processor");
             foreach (string instanceName in pfc.GetInstanceNames())
             {
                 if (!instanceName.Equals("_Total"))
                 {
-                    PerformanceCounter cpuUsage = new PerformanceCounter("Processor", "% Processor Time");
-                    cpuUsage.InstanceName = instanceName;
+                    PerformanceCounter cpuUsage = new PerformanceCounter("Processor", "% Processor Time")
+                    {
+                        InstanceName = instanceName
+                    };
                     performanceCounterList.Add(cpuUsage);
                     cpuUsage.NextValue();
                 }
@@ -1279,9 +1302,22 @@ namespace filemanager
             mainFunctionalProcess.Start();
         }
 
-        internal void sendMessage(string message)
+        public void connectToMainFunctionalProcess()
         {
+            socket.Connect(ipPoint);
+        }
 
+        public void sendMessage(string message)
+        {
+            try
+            {
+                byte[] data = Encoding.Unicode.GetBytes(message);
+                socket.Send(data);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
     }
 }

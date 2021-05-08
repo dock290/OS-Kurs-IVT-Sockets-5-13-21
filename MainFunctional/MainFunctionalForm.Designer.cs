@@ -29,23 +29,23 @@ namespace MainFunctional
         /// </summary>
         private void InitializeComponent()
         {
-            this.cpuUsageLabel = new System.Windows.Forms.Label();
+            this.cpuTimeLabel = new System.Windows.Forms.Label();
             this.listView = new System.Windows.Forms.ListView();
             this.coreColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.usageColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.cpuUsageValueLabel = new System.Windows.Forms.Label();
+            this.cpuTimeValueLabel = new System.Windows.Forms.Label();
             this.workingSetLabel = new System.Windows.Forms.Label();
             this.workingSetValueLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // cpuUsageLabel
+            // cpuTimeLabel
             // 
-            this.cpuUsageLabel.AutoSize = true;
-            this.cpuUsageLabel.Location = new System.Drawing.Point(11, 11);
-            this.cpuUsageLabel.Name = "cpuUsageLabel";
-            this.cpuUsageLabel.Size = new System.Drawing.Size(150, 13);
-            this.cpuUsageLabel.TabIndex = 0;
-            this.cpuUsageLabel.Text = "Использованное время ЦП:";
+            this.cpuTimeLabel.AutoSize = true;
+            this.cpuTimeLabel.Location = new System.Drawing.Point(11, 11);
+            this.cpuTimeLabel.Name = "cpuTimeLabel";
+            this.cpuTimeLabel.Size = new System.Drawing.Size(150, 13);
+            this.cpuTimeLabel.TabIndex = 0;
+            this.cpuTimeLabel.Text = "Использованное время ЦП:";
             // 
             // listView
             // 
@@ -76,14 +76,14 @@ namespace MainFunctional
             this.usageColumnHeader.Text = "Загрузка";
             this.usageColumnHeader.Width = 120;
             // 
-            // cpuUsageValueLabel
+            // cpuTimeValueLabel
             // 
-            this.cpuUsageValueLabel.AutoSize = true;
-            this.cpuUsageValueLabel.Location = new System.Drawing.Point(167, 11);
-            this.cpuUsageValueLabel.Name = "cpuUsageValueLabel";
-            this.cpuUsageValueLabel.Size = new System.Drawing.Size(30, 13);
-            this.cpuUsageValueLabel.TabIndex = 3;
-            this.cpuUsageValueLabel.Text = "0 мс";
+            this.cpuTimeValueLabel.AutoSize = true;
+            this.cpuTimeValueLabel.Location = new System.Drawing.Point(167, 11);
+            this.cpuTimeValueLabel.Name = "cpuTimeValueLabel";
+            this.cpuTimeValueLabel.Size = new System.Drawing.Size(30, 13);
+            this.cpuTimeValueLabel.TabIndex = 3;
+            this.cpuTimeValueLabel.Text = "0 мс";
             // 
             // workingSetLabel
             // 
@@ -110,9 +110,9 @@ namespace MainFunctional
             this.ClientSize = new System.Drawing.Size(286, 148);
             this.Controls.Add(this.workingSetValueLabel);
             this.Controls.Add(this.workingSetLabel);
-            this.Controls.Add(this.cpuUsageValueLabel);
+            this.Controls.Add(this.cpuTimeValueLabel);
             this.Controls.Add(this.listView);
-            this.Controls.Add(this.cpuUsageLabel);
+            this.Controls.Add(this.cpuTimeLabel);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(302, 187);
@@ -120,6 +120,8 @@ namespace MainFunctional
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Основной функционал";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.mainFunctionalForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.mainFunctionalForm_FormClosed);
             this.Load += new System.EventHandler(this.mainFunctionalForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -128,11 +130,11 @@ namespace MainFunctional
 
         #endregion
 
-        private System.Windows.Forms.Label cpuUsageLabel;
+        private System.Windows.Forms.Label cpuTimeLabel;
         private System.Windows.Forms.ListView listView;
         private System.Windows.Forms.ColumnHeader coreColumnHeader;
         private System.Windows.Forms.ColumnHeader usageColumnHeader;
-        private System.Windows.Forms.Label cpuUsageValueLabel;
+        private System.Windows.Forms.Label cpuTimeValueLabel;
         private System.Windows.Forms.Label workingSetLabel;
         private System.Windows.Forms.Label workingSetValueLabel;
     }
