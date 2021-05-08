@@ -33,6 +33,9 @@ namespace MainFunctional
             this.cpuUsageLabel = new System.Windows.Forms.Label();
             this.cpuUsageTextBox = new System.Windows.Forms.TextBox();
             this.updateTimer = new System.Windows.Forms.Timer(this.components);
+            this.listView = new System.Windows.Forms.ListView();
+            this.coreColumnHeader = new System.Windows.Forms.ColumnHeader();
+            this.usageColumnHeader = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
             // cpuUsageLabel
@@ -59,11 +62,40 @@ namespace MainFunctional
             this.updateTimer.Interval = 1000;
             this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
             // 
+            // listView
+            // 
+            this.listView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.coreColumnHeader,
+            this.usageColumnHeader});
+            this.listView.FullRowSelect = true;
+            this.listView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listView.HideSelection = false;
+            this.listView.Location = new System.Drawing.Point(13, 121);
+            this.listView.MultiSelect = false;
+            this.listView.Name = "listView";
+            this.listView.ShowGroups = false;
+            this.listView.Size = new System.Drawing.Size(279, 88);
+            this.listView.TabIndex = 2;
+            this.listView.UseCompatibleStateImageBehavior = false;
+            this.listView.View = System.Windows.Forms.View.Details;
+            // 
+            // coreColumnHeader
+            // 
+            this.coreColumnHeader.Text = "Ядро";
+            // 
+            // usageColumnHeader
+            // 
+            this.usageColumnHeader.Text = "Загрузка";
+            // 
             // mainFunctionalForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(304, 221);
+            this.Controls.Add(this.listView);
             this.Controls.Add(this.cpuUsageTextBox);
             this.Controls.Add(this.cpuUsageLabel);
             this.MaximizeBox = false;
@@ -84,6 +116,9 @@ namespace MainFunctional
         private System.Windows.Forms.Label cpuUsageLabel;
         private System.Windows.Forms.TextBox cpuUsageTextBox;
         private System.Windows.Forms.Timer updateTimer;
+        private System.Windows.Forms.ListView listView;
+        private System.Windows.Forms.ColumnHeader coreColumnHeader;
+        private System.Windows.Forms.ColumnHeader usageColumnHeader;
     }
 }
 
