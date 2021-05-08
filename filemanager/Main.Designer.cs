@@ -48,6 +48,8 @@
             this.controlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.controlConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resourceWatcherToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.minimalFunctionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mainFunctionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.itemContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,8 +59,7 @@
             this.recycleContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.recycleRestoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recycleDeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.minimalFunctionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mainFunctionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateTimer = new System.Windows.Forms.Timer(this.components);
             this.mainContextMenu.SuspendLayout();
             this.mainMenuStrip.SuspendLayout();
             this.itemContextMenu.SuspendLayout();
@@ -243,6 +244,20 @@
             this.resourceWatcherToolStripMenuItem.Text = "Монитор ресурсов";
             this.resourceWatcherToolStripMenuItem.Click += new System.EventHandler(this.resourceWatcherToolStripMenuItem_Click);
             // 
+            // minimalFunctionalToolStripMenuItem
+            // 
+            this.minimalFunctionalToolStripMenuItem.Name = "minimalFunctionalToolStripMenuItem";
+            this.minimalFunctionalToolStripMenuItem.Size = new System.Drawing.Size(174, 20);
+            this.minimalFunctionalToolStripMenuItem.Text = "Минимальный функционал";
+            this.minimalFunctionalToolStripMenuItem.Click += new System.EventHandler(this.minimalFunctionalToolStripMenuItem_Click);
+            // 
+            // mainFunctionalToolStripMenuItem
+            // 
+            this.mainFunctionalToolStripMenuItem.Name = "mainFunctionalToolStripMenuItem";
+            this.mainFunctionalToolStripMenuItem.Size = new System.Drawing.Size(147, 20);
+            this.mainFunctionalToolStripMenuItem.Text = "Основной функционал";
+            this.mainFunctionalToolStripMenuItem.Click += new System.EventHandler(this.mainFunctionalToolStripMenuItem_Click);
+            // 
             // itemContextMenu
             // 
             this.itemContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -313,19 +328,10 @@
             this.recycleDeleteMenuItem.Text = "Удалить безвозвратно";
             this.recycleDeleteMenuItem.Click += new System.EventHandler(this.recycleDeleteMenuItem_Click);
             // 
-            // minimalFunctionalToolStripMenuItem
+            // updateTimer
             // 
-            this.minimalFunctionalToolStripMenuItem.Name = "minimalFunctionalToolStripMenuItem";
-            this.minimalFunctionalToolStripMenuItem.Size = new System.Drawing.Size(174, 20);
-            this.minimalFunctionalToolStripMenuItem.Text = "Минимальный функционал";
-            this.minimalFunctionalToolStripMenuItem.Click += new System.EventHandler(this.minimalFunctionalToolStripMenuItem_Click);
-            // 
-            // mainFunctionalToolStripMenuItem
-            // 
-            this.mainFunctionalToolStripMenuItem.Name = "mainFunctionalToolStripMenuItem";
-            this.mainFunctionalToolStripMenuItem.Size = new System.Drawing.Size(147, 20);
-            this.mainFunctionalToolStripMenuItem.Text = "Основной функционал";
-            this.mainFunctionalToolStripMenuItem.Click += new System.EventHandler(this.mainFunctionalToolStripMenuItem_Click);
+            this.updateTimer.Interval = 1000;
+            this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
             // 
             // Main
             // 
@@ -345,6 +351,7 @@
             this.MinimumSize = new System.Drawing.Size(616, 405);
             this.Name = "Main";
             this.Text = "Файловый менеджер";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Main_FormClosed);
             this.Load += new System.EventHandler(this.Main_Load);
             this.mainContextMenu.ResumeLayout(false);
             this.mainMenuStrip.ResumeLayout(false);
@@ -387,6 +394,7 @@
         private System.Windows.Forms.ToolStripMenuItem recycleDeleteMenuItem;
         private System.Windows.Forms.ToolStripMenuItem minimalFunctionalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mainFunctionalToolStripMenuItem;
+        private System.Windows.Forms.Timer updateTimer;
     }
 }
 

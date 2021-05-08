@@ -90,5 +90,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MainFunctional\MainFunctional.csproj">
+      <Project>{874febf4-cf55-403c-a41b-802c37ebc1c1}</Project>
+      <Name>MainFunctional</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

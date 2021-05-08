@@ -30,6 +30,8 @@ namespace filemanager
         /// </summary>
         private readonly Dictionary<string, int> extenstionImageIndexMap = new Dictionary<string, int>();
 
+        private readonly MainFunctionalInteraction mainFunctional;
+
         private readonly Minimal minimalForm;
 
         public readonly FileManager fileManager;
@@ -60,7 +62,21 @@ namespace filemanager
             fileManager = new FileManager();
 
             InitializeComponent();
+
             minimalForm = new Minimal(this);
+
+            mainFunctional = new MainFunctionalInteraction();
+            try
+            {
+                string mainFunctionalProcessPath = Path.Combine(fileManager.SYSTEM_PATH, "MainFunctional.exe");
+                mainFunctional.startMainFunctionalProcess(mainFunctionalProcessPath);
+                updateTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                showErrorMessage("Не удалось запустить процесс основного функционала");
+            }
         }
 
         /// <summary>
@@ -578,7 +594,50 @@ namespace filemanager
 
         private void mainFunctionalToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            mainFunctional.sendMessage("SHOW\n");
+        }
 
+        private void updateTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append("ProcessorTime");
+                sb.Append("=");
+                sb.Append(mainFunctional.currentProcess.TotalProcessorTime.TotalMilliseconds);
+                sb.Append("\n");
+
+                sb.Append("WorkingSet");
+                sb.Append("=");
+                sb.Append(mainFunctional.currentProcess.WorkingSet64);
+                sb.Append("\n");
+
+                foreach (PerformanceCounter pc in mainFunctional.performanceCounterList)
+                {
+                    float value = pc.NextValue();
+                    sb.Append(pc.InstanceName);
+                    sb.Append("=");
+                    sb.Append(value);
+                    sb.Append("\n");
+                }
+
+                mainFunctional.sendMessage(sb.ToString());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
+        private void Main_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            updateTimer.Stop();
+
+            if (!mainFunctional.mainFunctionalProcess.HasExited)
+            {
+                mainFunctional.mainFunctionalProcess.Kill();
+            }
         }
     }
 
@@ -1188,6 +1247,41 @@ namespace filemanager
             }
 
             throw new ArgumentException($"Недопустимое значение {itemPath}");
+        }
+    }
+
+    public class MainFunctionalInteraction
+    {
+        public readonly Process currentProcess = Process.GetCurrentProcess();
+        public readonly List<PerformanceCounter> performanceCounterList = new List<PerformanceCounter>();
+
+        public readonly Process mainFunctionalProcess = new Process();
+
+        public MainFunctionalInteraction()
+        {
+            PerformanceCounterCategory pfc = new PerformanceCounterCategory("Processor");
+            foreach (string instanceName in pfc.GetInstanceNames())
+            {
+                if (!instanceName.Equals("_Total"))
+                {
+                    PerformanceCounter cpuUsage = new PerformanceCounter("Processor", "% Processor Time");
+                    cpuUsage.InstanceName = instanceName;
+                    performanceCounterList.Add(cpuUsage);
+                    cpuUsage.NextValue();
+                }
+            }
+            performanceCounterList.Sort((pc1, pc2) => pc1.InstanceName.CompareTo(pc2.InstanceName));
+        }
+
+        public void startMainFunctionalProcess(string processPath)
+        {
+            mainFunctionalProcess.StartInfo.FileName = processPath;
+            mainFunctionalProcess.Start();
+        }
+
+        internal void sendMessage(string message)
+        {
+
         }
     }
 }
