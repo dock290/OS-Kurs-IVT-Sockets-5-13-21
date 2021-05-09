@@ -29,12 +29,13 @@ namespace filemanager
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.externalStorageGroupBox = new System.Windows.Forms.GroupBox();
             this.externalStorageListView = new System.Windows.Forms.ListView();
             this.processesGroupBox = new System.Windows.Forms.GroupBox();
             this.saveProcessesButton = new System.Windows.Forms.Button();
             this.processesFileNameTextBox = new System.Windows.Forms.TextBox();
-            this.updateExternalStorageButton = new System.Windows.Forms.Button();
+            this.usbScanTimer = new System.Windows.Forms.Timer(this.components);
             this.externalStorageGroupBox.SuspendLayout();
             this.processesGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -44,7 +45,6 @@ namespace filemanager
             this.externalStorageGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.externalStorageGroupBox.Controls.Add(this.updateExternalStorageButton);
             this.externalStorageGroupBox.Controls.Add(this.externalStorageListView);
             this.externalStorageGroupBox.Location = new System.Drawing.Point(13, 69);
             this.externalStorageGroupBox.Name = "externalStorageGroupBox";
@@ -58,14 +58,15 @@ namespace filemanager
             this.externalStorageListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.externalStorageListView.FullRowSelect = true;
             this.externalStorageListView.HideSelection = false;
             this.externalStorageListView.Location = new System.Drawing.Point(7, 20);
+            this.externalStorageListView.MultiSelect = false;
             this.externalStorageListView.Name = "externalStorageListView";
-            this.externalStorageListView.Size = new System.Drawing.Size(235, 114);
+            this.externalStorageListView.Size = new System.Drawing.Size(266, 114);
             this.externalStorageListView.TabIndex = 0;
             this.externalStorageListView.UseCompatibleStateImageBehavior = false;
             this.externalStorageListView.View = System.Windows.Forms.View.List;
-            this.externalStorageListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.externalStorageListView_MouseDoubleClick);
             // 
             // processesGroupBox
             // 
@@ -100,18 +101,10 @@ namespace filemanager
             this.processesFileNameTextBox.Text = "processes.txt";
             this.processesFileNameTextBox.TextChanged += new System.EventHandler(this.processesFileNameTextBox_TextChanged);
             // 
-            // updateExternalStorageButton
+            // usbScanTimer
             // 
-            this.updateExternalStorageButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.updateExternalStorageButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.updateExternalStorageButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.updateExternalStorageButton.Location = new System.Drawing.Point(248, 20);
-            this.updateExternalStorageButton.Name = "updateExternalStorageButton";
-            this.updateExternalStorageButton.Size = new System.Drawing.Size(25, 25);
-            this.updateExternalStorageButton.TabIndex = 1;
-            this.updateExternalStorageButton.Text = "⭮";
-            this.updateExternalStorageButton.UseVisualStyleBackColor = true;
-            this.updateExternalStorageButton.Click += new System.EventHandler(this.updateExternalStorageButton_Click);
+            this.usbScanTimer.Interval = 1500;
+            this.usbScanTimer.Tick += new System.EventHandler(this.usbScanTimer_Tick);
             // 
             // Minimal
             // 
@@ -126,7 +119,7 @@ namespace filemanager
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Монитор процессов";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Minimal_FormClosing);
-            this.Load += new System.EventHandler(this.Minimal_Load);
+            this.Shown += new System.EventHandler(this.Minimal_Shown);
             this.externalStorageGroupBox.ResumeLayout(false);
             this.processesGroupBox.ResumeLayout(false);
             this.processesGroupBox.PerformLayout();
@@ -141,6 +134,6 @@ namespace filemanager
         private System.Windows.Forms.Button saveProcessesButton;
         private System.Windows.Forms.TextBox processesFileNameTextBox;
         private System.Windows.Forms.ListView externalStorageListView;
-        private System.Windows.Forms.Button updateExternalStorageButton;
+        private System.Windows.Forms.Timer usbScanTimer;
     }
 }

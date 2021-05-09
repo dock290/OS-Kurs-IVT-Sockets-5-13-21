@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace filemanager
@@ -22,24 +16,9 @@ namespace filemanager
         public Minimal(Main mainWindow)
         {
             this.mainWindow = mainWindow;
-            this.fileManager = mainWindow.fileManager;
+            fileManager = mainWindow.fileManager;
 
             InitializeComponent();
-        }
-
-        public void updateExternalStorageList()
-        {
-            externalStorageListView.Items.Clear();
-
-            ListViewItem item = new ListViewItem("Файловый менеджер");
-            externalStorageListView.Items.Add(item);
-
-
-        }
-
-        private void Minimal_Load(object sender, EventArgs e)
-        {
-            updateExternalStorageList();
         }
 
         private void processesFileNameTextBox_TextChanged(object sender, EventArgs e)
@@ -55,7 +34,7 @@ namespace filemanager
             try
             {
                 StringBuilder buffer = new StringBuilder();
-                foreach (var process in Process.GetProcesses())
+                foreach (Process process in Process.GetProcesses())
                 {
                     try
                     {
@@ -109,20 +88,30 @@ namespace filemanager
             }
         }
 
-        private void externalStorageListView_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void Minimal_Shown(object sender, EventArgs e)
         {
-
-        }
-
-        private void updateExternalStorageButton_Click(object sender, EventArgs e)
-        {
-            updateExternalStorageList();
+            usbScanTimer.Start();
         }
 
         private void Minimal_FormClosing(object sender, FormClosingEventArgs e)
         {
             Hide();
             e.Cancel = true;
+            usbScanTimer.Stop();
+        }
+
+        private void usbScanTimer_Tick(object sender, EventArgs e)
+        {
+            externalStorageListView.Items.Clear();
+            foreach (DriveInfo driveInfo in DriveInfo.GetDrives())
+            {
+                if (driveInfo.IsReady && driveInfo.DriveType == DriveType.Removable)
+                {
+                    externalStorageListView.Items.Add(string.Format("{0} ({1})",
+                    (string.IsNullOrEmpty(driveInfo.VolumeLabel) ? "Съёмный диск" : driveInfo.VolumeLabel),
+                    driveInfo.Name));
+                }
+            }
         }
     }
 }
