@@ -31,6 +31,7 @@ namespace filemanager
             Cursor = Cursors.WaitCursor;
             saveProcessesButton.Enabled = false;
 
+            // Сохранение списка процессов, запущенных после основного процесса, в файл
             try
             {
                 StringBuilder buffer = new StringBuilder();
@@ -102,6 +103,7 @@ namespace filemanager
 
         private void usbScanTimer_Tick(object sender, EventArgs e)
         {
+            // Обновление списка подключенных съёмных устройств
             externalStorageListView.Items.Clear();
             foreach (DriveInfo driveInfo in DriveInfo.GetDrives())
             {

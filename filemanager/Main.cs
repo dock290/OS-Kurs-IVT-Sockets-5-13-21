@@ -23,10 +23,19 @@ namespace filemanager
         /// </summary>
         private readonly Dictionary<string, int> extenstionImageIndexMap = new Dictionary<string, int>();
 
+        /// <summary>
+        /// Вспомогательные функции основного функционала
+        /// </summary>
         private readonly MainFunctionalInteraction mainFunctional;
 
+        /// <summary>
+        /// Окно минимального функционала
+        /// </summary>
         private readonly Minimal minimalForm;
 
+        /// <summary>
+        /// Вспомогательные функции файлового менеджера
+        /// </summary>
         public readonly FileManager fileManager;
 
         /// <summary>
@@ -46,12 +55,12 @@ namespace filemanager
 
         public Main()
         {
+            // Остановка всех лишних процессов основного функционала
             Process[] processes = Process.GetProcessesByName("MainFunctional");
             foreach (Process process in processes)
             {
                 process.Kill();
             }
-
 
             // Заполнение отношения расширения файла к номеру изображения
             extenstionImageIndexMap.Add(".TXT", TEXT_IMAGE);
@@ -68,6 +77,7 @@ namespace filemanager
             mainFunctional = new MainFunctionalInteraction();
             try
             {
+                // Запуск процесса основного функционала
                 string mainFunctionalProcessPath = Path.Combine(fileManager.SYSTEM_PATH, "MainFunctional.exe");
                 mainFunctional.startMainFunctionalProcess(mainFunctionalProcessPath);
             }
@@ -83,9 +93,11 @@ namespace filemanager
         /// </summary>
         public void updateUI()
         {
+            // Обновить поле текщего пути
             pathTextBox.Text = fileManager.getCurrentDirectory();
             updateDirectoryItemList();
 
+            // Включение или отключение кнопок
             buttonBack.Enabled = fileManager.getCurrentDirectory().Length != 0;
             pasteToolStripMenuItem.Enabled = bufferedPaths.Count != 0;
         }
@@ -149,14 +161,15 @@ namespace filemanager
         {
             try
             {
+                // Если были выбраны элементы
                 if (directoryContentListView.SelectedItems.Count > 0)
                 {
                     string itemPath = Path.Combine(fileManager.getFullCurrentDirectory(), directoryContentListView.SelectedItems[0].Text);
-                    if (File.Exists(itemPath))
+                    if (File.Exists(itemPath)) // Если выбран файл, то открыть его
                     {
                         startProcess(itemPath);
                     }
-                    else if (Directory.Exists(itemPath))
+                    else if (Directory.Exists(itemPath)) // Если выбрана папка, то перейти в неё
                     {
                         fileManager.setCurrentDirectory(itemPath);
                         updateUI();
@@ -193,10 +206,10 @@ namespace filemanager
         {
             try
             {
-                mainFunctional.connectToMainFunctionalProcess();
-                mainFunctional.sendMessage("Show=false\n");
-                mainFunctional.sendMessage($"Cores={Environment.ProcessorCount}\n");
-                updateTimer.Start();
+                mainFunctional.connectToMainFunctionalProcess(); // Подключение к процессу с основным функционалом
+                mainFunctional.sendMessage("Show=false\n"); // Отправка сообщения "Скрыть окно"
+                mainFunctional.sendMessage($"Cores={Environment.ProcessorCount}\n"); // Отправка сообщения с количесвтом ядер
+                updateTimer.Start(); // Запуск таймер отправки сообщений 
             }
             catch (Exception ex)
             {
@@ -220,10 +233,12 @@ namespace filemanager
             if (e.Button == MouseButtons.Left)
             {
                 string currentPath = fileManager.getFullCurrentDirectory();
+
+                // Если текущий путь - корзина
                 if (FileManager.Utils.IsPathInRoot(fileManager.RECYCLE_PATH, currentPath))
                 {
                     string itemPath = Path.Combine(fileManager.getFullCurrentDirectory(), directoryContentListView.SelectedItems[0].Text);
-                    if (Directory.Exists(itemPath))
+                    if (Directory.Exists(itemPath)) // Если выбрана папка, то перейти в неё
                     {
                         fileManager.setCurrentDirectory(itemPath);
                         updateUI();
@@ -231,7 +246,7 @@ namespace filemanager
                 }
                 else
                 {
-                    openSelectedItem();
+                    openSelectedItem(); // Если выбран файл, то открыть его
                 }
             }
         }
@@ -243,12 +258,14 @@ namespace filemanager
             {
                 switch (hitTestInfo.Location)
                 {
+                    // Если нажат текст или изображение элемента
                     case ListViewHitTestLocations.Label:
                     case ListViewHitTestLocations.Image:
                         {
                             string currentPath = fileManager.getFullCurrentDirectory();
                             if (FileManager.Utils.IsPathInRoot(fileManager.RECYCLE_PATH, currentPath))
                             {
+                                // Показать другое контекстное меню в корзине
                                 recycleContextMenu.Show(MousePosition);
                             }
                             else
@@ -258,6 +275,7 @@ namespace filemanager
                         }
                         break;
 
+                    // Если нажато поле окна
                     case ListViewHitTestLocations.None:
                         mainContextMenu.Show(MousePosition);
                         break;
@@ -265,10 +283,14 @@ namespace filemanager
             }
         }
 
+        /// <summary>
+        /// Событие нажатия кнопки "« (Назад)"
+        /// </summary>
         private void buttonBack_Click(object sender, EventArgs e)
         {
             try
             {
+                // Переход в родительскую папку
                 fileManager.setCurrentDirectory(FileManager.Utils.GetParentDirectory(fileManager.getFullCurrentDirectory()));
             }
             catch (Exception ex)
@@ -321,6 +343,7 @@ namespace filemanager
 
         private void createDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Отобразить новый элемент в виде папки и начать его редактирование
             try
             {
                 string newDirectoryName = fileManager.createNameWithNumber("Новая папка");
@@ -338,6 +361,7 @@ namespace filemanager
 
         private void createFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Отобразить новый элемент в виде файла и начать его редактирование
             try
             {
                 string newFileName = fileManager.createNameWithNumber("Новый файл");
@@ -353,15 +377,19 @@ namespace filemanager
             }
         }
 
+        /// <summary>
+        /// Событие завершения редактирования
+        /// </summary>
         private void directoryContentListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
         {
             try
             {
                 string path = fileManager.getFullCurrentDirectory();
-                if (e.Label == null)
+                if (e.Label == null) // Если редактирование было отменено
                 {
                     string newPath = Path.Combine(path, directoryContentListView.Items[e.Item].Text);
 
+                    // Создать папку или файл
                     if (isDirectoryInteracted)
                     {
                         fileManager.createDirectory(newPath);
@@ -371,24 +399,24 @@ namespace filemanager
                         fileManager.createFile(newPath);
                     }
                 }
-                else
+                else // Если редактирование не было отменено
                 {
                     string newPath = Path.Combine(path, e.Label);
                     string oldPath = Path.Combine(path, directoryContentListView.Items[e.Item].Text);
 
-                    if (Directory.Exists(oldPath))
+                    if (Directory.Exists(oldPath)) // Если происходит переименование папки
                     {
                         fileManager.renameDirectory(oldPath, newPath);
                     }
-                    else if (isDirectoryInteracted)
+                    else if (isDirectoryInteracted) // Если происходит создание папки
                     {
                         fileManager.createDirectory(newPath);
                     }
-                    else if (File.Exists(oldPath))
+                    else if (File.Exists(oldPath)) // Если происходит переименование файла
                     {
                         fileManager.renameFile(oldPath, newPath);
                     }
-                    else
+                    else // Если происходит создание файла
                     {
                         fileManager.createFile(newPath);
                     }
@@ -414,6 +442,9 @@ namespace filemanager
             openSelectedItem();
         }
 
+        /// <summary>
+        /// Событие при нажатии кнопки "Вырезать"
+        /// </summary>
         private void cutMenuItem_Click(object sender, EventArgs e)
         {
             bufferedPaths.Clear();
@@ -426,6 +457,9 @@ namespace filemanager
             pasteToolStripMenuItem.Enabled = bufferedPaths.Count != 0;
         }
 
+        /// <summary>
+        /// Событие при нажатии кнопки "Копировать"
+        /// </summary>
         private void copyMenuItem_Click(object sender, EventArgs e)
         {
             bufferedPaths.Clear();
@@ -434,13 +468,18 @@ namespace filemanager
                 bufferedPaths.Add(Path.Combine(fileManager.getFullCurrentDirectory(), item.Text));
             }
 
+            isCut = false;
             pasteToolStripMenuItem.Enabled = bufferedPaths.Count != 0;
         }
 
+        /// <summary>
+        /// Событие при нажатии кнопки "Вставить"
+        /// </summary>
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Cursor = directoryContentListView.Cursor = Cursors.WaitCursor;
 
+            // Создание пар старых и новых путей
             List<KeyValuePair<string, string>> oldPathNewPathPairList = new List<KeyValuePair<string, string>>();
             string basePath = fileManager.getFullCurrentDirectory();
 
@@ -452,7 +491,7 @@ namespace filemanager
 
             try
             {
-                if (isCut)
+                if (isCut) // Если папки и файлы были вырезаны
                 {
                     if (!fileManager.cutPaste(oldPathNewPathPairList))
                     {
@@ -460,7 +499,7 @@ namespace filemanager
                     }
                     bufferedPaths.Clear();
                 }
-                else
+                else // Если папки и файлы были скопированы
                 {
                     if (!fileManager.copyPaste(oldPathNewPathPairList))
                     {
@@ -481,6 +520,9 @@ namespace filemanager
             Cursor = directoryContentListView.Cursor = Cursors.Arrow;
         }
 
+        /// <summary>
+        /// Событие при нажатии кнопки "Удалить"
+        /// </summary>
         private void deleteMenuItem_Click(object sender, EventArgs e)
         {
             Cursor = directoryContentListView.Cursor = Cursors.WaitCursor;
@@ -496,6 +538,7 @@ namespace filemanager
 
                 if (itemPaths.Count > 0)
                 {
+                    // Переместить папки и файлы в корзину
                     fileManager.addItemsToRecycleBin(itemPaths);
                 }
             }
@@ -511,6 +554,9 @@ namespace filemanager
             }
         }
 
+        /// <summary>
+        /// Событие при нажатии кнопки "Переименовать"
+        /// </summary>
         private void renameMenuItem_Click(object sender, EventArgs e)
         {
             Cursor = directoryContentListView.Cursor = Cursors.WaitCursor;
@@ -519,6 +565,7 @@ namespace filemanager
             {
                 if (directoryContentListView.SelectedItems.Count > 0)
                 {
+                    // Начать редактирование выбранного элемента
                     directoryContentListView.SelectedItems[0].BeginEdit();
                 }
             }
@@ -533,6 +580,9 @@ namespace filemanager
             }
         }
 
+        /// <summary>
+        /// Событие при нажатии кнопки "Восстановить"
+        /// </summary>
         private void recycleRestoreMenuItem_Click(object sender, EventArgs e)
         {
             Cursor = directoryContentListView.Cursor = Cursors.WaitCursor;
@@ -564,6 +614,9 @@ namespace filemanager
             }
         }
 
+        /// <summary>
+        /// Событие при нажатии кнопки "Удалить"
+        /// </summary>
         private void recycleDeleteMenuItem_Click(object sender, EventArgs e)
         {
             Cursor = directoryContentListView.Cursor = Cursors.WaitCursor;
@@ -599,33 +652,46 @@ namespace filemanager
             }
         }
 
+
+        /// <summary>
+        /// Событие при нажатии кнопки "Минимальный функционал"
+        /// </summary>
         private void minimalFunctionalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             minimalForm.Show();
             minimalForm.Focus();
         }
 
+        /// <summary>
+        /// Событие при нажатии кнопки "Основной функционал"
+        /// </summary>
         private void mainFunctionalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mainFunctional.sendMessage("Show=true\n");
+            mainFunctional.sendMessage("Show=true\n"); // Отправка сообщения "Отобразить окно"
         }
 
+        /// <summary>
+        /// Событие обновления таймера
+        /// </summary>
         private void updateTimer_Tick(object sender, EventArgs e)
         {
             try
             {
                 StringBuilder sb = new StringBuilder();
 
+                // Строка со значением процессорного времени
                 sb.Append("ProcessorTime");
                 sb.Append("=");
                 sb.Append(mainFunctional.currentProcess.TotalProcessorTime.TotalMilliseconds);
                 sb.Append("\n");
 
+                // Строка со значением размера рабочего множества страниц процесса
                 sb.Append("WorkingSet");
                 sb.Append("=");
                 sb.Append(mainFunctional.currentProcess.WorkingSet64);
                 sb.Append("\n");
 
+                // Строки со значением нагрузки ядер
                 foreach (PerformanceCounter pc in mainFunctional.performanceCounterList)
                 {
                     float value = pc.NextValue();
@@ -635,6 +701,7 @@ namespace filemanager
                     sb.Append("\n");
                 }
 
+                // Отправка собранного сообщения
                 mainFunctional.sendMessage(sb.ToString());
             }
             catch (Exception ex)
@@ -643,6 +710,9 @@ namespace filemanager
             }
         }
 
+        /// <summary>
+        /// Событие выхода из приложения
+        /// </summary>
         private void Main_FormClosed(object sender, FormClosedEventArgs e)
         {
             updateTimer.Stop();
@@ -666,11 +736,17 @@ namespace filemanager
         /// </summary>
         public readonly string ROOT_PATH;
 
+        /// <summary>
+        /// Путь к корневой корзине
+        /// </summary>
         public readonly string RECYCLE_PATH;
 
         public readonly List<string> fullProtectedPaths = new List<string>();
         public readonly List<string> protectedPaths = new List<string>();
 
+        /// <summary>
+        /// Вспомогательный класс "Корзина"
+        /// </summary>
         public readonly RecycleBin recycleBin;
 
         public FileManager()
@@ -704,6 +780,9 @@ namespace filemanager
             Directory.SetCurrentDirectory(ROOT_PATH);
         }
 
+        /// <summary>
+        /// Отправляет папки или файлы в корзину
+        /// </summary>
         public void addItemsToRecycleBin(List<string> itemPaths)
         {
             foreach (string itemPath in itemPaths)
@@ -712,6 +791,9 @@ namespace filemanager
             }
         }
 
+        /// <summary>
+        /// Отправляет папкe или файл в корзину
+        /// </summary>
         public void addItemToRecycleBin(string itemPath)
         {
             throwIfProtected(itemPath);
@@ -795,10 +877,13 @@ namespace filemanager
         /// <summary>
         /// Получает путь к системной папке
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Строка, содержащая путь к системной папке</returns>
         public static string GetApplicationDirectory()
             => Application.StartupPath;
 
+        /// <summary>
+        /// Создаёт папку
+        /// </summary>
         public void createDirectory(string path)
         {
             string directoryPath = Utils.FormatPath(path);
@@ -813,6 +898,9 @@ namespace filemanager
             Directory.CreateDirectory(directoryPath);
         }
 
+        /// <summary>
+        /// Создаёт файл
+        /// </summary>
         public void createFile(string path)
         {
             string filePath = Utils.FormatPath(path);
@@ -827,6 +915,9 @@ namespace filemanager
             File.Create(filePath).Close();
         }
 
+        /// <summary>
+        /// Переименовывает папку
+        /// </summary>
         public void renameDirectory(string oldPath, string newPath)
         {
             string oldDirectoryPath = Utils.FormatPath(oldPath);
@@ -838,6 +929,9 @@ namespace filemanager
             moveDirectory(oldDirectoryPath, newDirectoryPath);
         }
 
+        /// <summary>
+        /// Переименовывает файл
+        /// </summary>
         public void renameFile(string oldPath, string newPath)
         {
             string oldFilePath = Utils.FormatPath(oldPath);
@@ -849,6 +943,9 @@ namespace filemanager
             moveFile(oldFilePath, newFilePath);
         }
 
+        /// <summary>
+        /// Перемещает папку
+        /// </summary>
         public void moveDirectory(string oldPath, string newPath)
         {
             string oldDirectoryPath = Utils.FormatPath(oldPath);
@@ -870,6 +967,9 @@ namespace filemanager
             Directory.Move(oldDirectoryPath, newDirectoryPath);
         }
 
+        /// <summary>
+        /// Перемещает файл
+        /// </summary>
         public void moveFile(string oldPath, string newPath)
         {
             string oldFilePath = Utils.FormatPath(oldPath);
@@ -891,6 +991,9 @@ namespace filemanager
             File.Move(oldFilePath, newFilePath);
         }
 
+        /// <summary>
+        /// Копирует папки и файлы
+        /// </summary>
         public bool copyPaste(List<KeyValuePair<string, string>> oldPathNewPathPairList)
         {
             bool isOk = true;
@@ -934,8 +1037,13 @@ namespace filemanager
             return isOk;
         }
 
+        /// <summary>
+        /// Копирует папку
+        /// </summary>
         private bool copyPasteDirectory(string oldPath, string newPath)
         {
+            throwIfProtected(newPath);
+
             Directory.CreateDirectory(newPath);
 
             List<KeyValuePair<string, string>> oldPathNewPathPairList = new List<KeyValuePair<string, string>>();
@@ -960,8 +1068,13 @@ namespace filemanager
             return copyPaste(oldPathNewPathPairList);
         }
 
+        /// <summary>
+        /// Копирует файл
+        /// </summary>
         private void copyPasteFile(string oldPath, string newPath)
         {
+            throwIfProtected(newPath);
+
             if (File.Exists(newPath))
             {
                 File.Delete(newPath);
@@ -970,6 +1083,9 @@ namespace filemanager
             File.Copy(oldPath, newPath);
         }
 
+        /// <summary>
+        /// Вырезает папки и файлы
+        /// </summary>
         public bool cutPaste(List<KeyValuePair<string, string>> oldPathNewPathPairList)
         {
             bool isOk = true;
@@ -1024,8 +1140,13 @@ namespace filemanager
             return isOk;
         }
 
+        /// <summary>
+        /// Вырезает папку
+        /// </summary>
         private void cutPasteDirectory(string oldPath, string newPath)
         {
+            throwIfProtected(newPath);
+
             if (Directory.Exists(newPath))
             {
                 Directory.Delete(newPath, true);
@@ -1034,8 +1155,13 @@ namespace filemanager
             Directory.Move(oldPath, newPath);
         }
 
+        /// <summary>
+        /// Вырезает файл
+        /// </summary>
         private void cutPasteFile(string oldPath, string newPath)
         {
+            throwIfProtected(newPath);
+
             if (File.Exists(newPath))
             {
                 File.Delete(newPath);
@@ -1044,6 +1170,9 @@ namespace filemanager
             File.Move(oldPath, newPath);
         }
 
+        /// <summary>
+        /// Удаляет папку
+        /// </summary>
         public void deleteDirectory(string path)
         {
             string directoryPath = Utils.FormatPath(path);
@@ -1053,6 +1182,9 @@ namespace filemanager
             Directory.Delete(directoryPath, true);
         }
 
+        /// <summary>
+        /// Удаляет файл
+        /// </summary>
         public void deleteFile(string path)
         {
             string filePath = Utils.FormatPath(path);
@@ -1062,6 +1194,9 @@ namespace filemanager
             File.Delete(filePath);
         }
 
+        /// <summary>
+        /// Создаёт новое незанятое имя
+        /// </summary>
         public string createNameWithNumber(string fullPath)
         {
             string result;
@@ -1086,6 +1221,9 @@ namespace filemanager
             throw new Exception("Невозможно получить свободное название");
         }
 
+        /// <summary>
+        /// Создаёт ошибку если путь запрещено редактировать
+        /// </summary>
         public void throwIfProtected(string path)
         {
             foreach (string protectedPath in fullProtectedPaths)
@@ -1179,7 +1317,7 @@ namespace filemanager
                     result = string.Empty;
                 }
 
-                result = Utils.FormatPath(result);
+                result = FormatPath(result);
 
                 return result;
             }
@@ -1250,6 +1388,7 @@ namespace filemanager
 
     public class RecycleBin
     {
+        // Буфер путей к удалённым папкам и файлам
         private readonly List<string> deletedItems;
 
         public RecycleBin() : this(new List<string>())
@@ -1297,9 +1436,11 @@ namespace filemanager
 
         public MainFunctionalInteraction()
         {
+            // Получение адреса и создание сокета
             ipPoint = new IPEndPoint(Dns.GetHostAddresses("localhost")[0], 8000);
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+            // Получение информации о загрузке ядер
             PerformanceCounterCategory pfc = new PerformanceCounterCategory("Processor");
             foreach (string instanceName in pfc.GetInstanceNames())
             {
@@ -1316,17 +1457,27 @@ namespace filemanager
             performanceCounterList.Sort((pc1, pc2) => pc1.InstanceName.CompareTo(pc2.InstanceName));
         }
 
+        /// <summary>
+        /// Запускает процесс основного функционала
+        /// </summary>
         public void startMainFunctionalProcess(string processPath)
         {
             mainFunctionalProcess.StartInfo.FileName = processPath;
             mainFunctionalProcess.Start();
         }
 
+        /// <summary>
+        /// Устанавливает соединение с процессом основного функционала
+        /// </summary>
         public void connectToMainFunctionalProcess()
         {
             socket.Connect(ipPoint);
         }
 
+        /// <summary>
+        /// Отправляет сообщение процессу основного функционала
+        /// </summary>
+        /// <param name="message"></param>
         public void sendMessage(string message)
         {
             try

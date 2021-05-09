@@ -18,6 +18,7 @@ namespace MainFunctional
 
         public mainFunctionalForm()
         {
+            // Остановка всех лишних процессов основного функционала
             Process[] processes = Process.GetProcessesByName("MainFunctional");
             foreach (Process process in processes)
             {
@@ -27,9 +28,11 @@ namespace MainFunctional
                 }
             }
 
+            // Получение адреса и создание сокета
             ipPoint = new IPEndPoint(Dns.GetHostAddresses("localhost")[0], 8000);
             listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+            // Запуск процесса прослушки сокета
             socketListenThread = new Thread(receiveMessage);
             socketListenThread.Start();
 
@@ -55,6 +58,7 @@ namespace MainFunctional
                     int bytes = 0;
                     byte[] data = new byte[256];
 
+                    // Получение сообщения
                     do
                     {
                         bytes = handler.Receive(data);
@@ -68,7 +72,7 @@ namespace MainFunctional
                         {
                             string[] keyValue = token.Split('=');
 
-                            if (keyValue[0].Equals("Show"))
+                            if (keyValue[0].Equals("Show")) // Показать окно
                             {
                                 if (keyValue[1].Equals("true"))
                                 {
@@ -79,17 +83,17 @@ namespace MainFunctional
                                     Hide();
                                 }
                             }
-                            else if (keyValue[0].Equals("ProcessorTime"))
+                            else if (keyValue[0].Equals("ProcessorTime")) // Процессорное время
                             {
                                 string processorTime = keyValue[1];
                                 cpuTimeValueLabel.Text = $"{processorTime} мс";
                             }
-                            else if (keyValue[0].Equals("WorkingSet"))
+                            else if (keyValue[0].Equals("WorkingSet")) // Размер рабочего множества страниц
                             {
                                 string workingSet = keyValue[1];
                                 workingSetValueLabel.Text = $"{workingSet} байт";
                             }
-                            else if (keyValue[0].Equals("Cores"))
+                            else if (keyValue[0].Equals("Cores")) // Количество ядер
                             {
                                 int cores = int.Parse(keyValue[1]);
                                 for (int i = 0; i < cores; i++)
@@ -98,21 +102,22 @@ namespace MainFunctional
                                     listView.Items.Add(item);
                                 }
                             }
-                            else if (int.TryParse(keyValue[0], out int core))
+                            else if (int.TryParse(keyValue[0], out int core)) // Информация о нагрузке на ядро
                             {
                                 listView.Items[core].SubItems[1].Text = keyValue[1];
                             }
                         }
                     }
                 } while (isWorking);
-
-                Application.Exit();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 MessageBox.Show(this, ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 isWorking = false;
+            }
+            finally
+            {
                 Application.Exit();
             }
         }
