@@ -330,7 +330,7 @@ namespace filemanager
             => startProcess("taskmgr", taskManagerToolStripMenuItem);
 
         private void cmdToolStripMenuItem_Click(object sender, EventArgs e)
-            => startProcess("control", cmdToolStripMenuItem);
+            => startProcess("cmd", cmdToolStripMenuItem);
 
         private void controlToolStripMenuItem_Click(object sender, EventArgs e)
             => startProcess("control", controlToolStripMenuItem);
