@@ -73,7 +73,6 @@ namespace MainFunctional
                                 if (keyValue[1].Equals("true"))
                                 {
                                     Show();
-                                    Focus();
                                 }
                                 else
                                 {

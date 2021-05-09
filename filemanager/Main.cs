@@ -289,7 +289,7 @@ namespace filemanager
             {
                 try
                 {
-                    string newPath = Path.Combine(fileManager.getFullCurrentDirectory(), pathTextBox.Text);
+                    string newPath = Path.Combine(fileManager.ROOT_PATH, pathTextBox.Text);
                     fileManager.setCurrentDirectory(newPath);
                 }
                 catch (Exception ex)
@@ -652,11 +652,6 @@ namespace filemanager
                 mainFunctional.mainFunctionalProcess.Kill();
             }
         }
-
-        private void Main_Shown(object sender, EventArgs e)
-        {
-
-        }
     }
 
     public class FileManager
@@ -723,6 +718,22 @@ namespace filemanager
 
             string relativePath = Utils.GetRelativePath(ROOT_PATH, itemPath);
             string newPath = Path.Combine(RECYCLE_PATH, relativePath);
+
+            // Если по пути не хватает папок, то создать их
+            string directoryPath = RECYCLE_PATH;
+            foreach (string dir in relativePath.Split('\\'))
+            {
+                directoryPath = Path.Combine(directoryPath, dir);
+                if (!Directory.Exists(directoryPath))
+                {
+                    if (File.Exists(directoryPath))
+                    {
+                        File.Delete(directoryPath);
+                    }
+
+                    Directory.CreateDirectory(directoryPath);
+                }
+            }
 
             List<KeyValuePair<string, string>> oldPathNewPaths = new List<KeyValuePair<string, string>>
             {
@@ -1015,10 +1026,12 @@ namespace filemanager
 
         private void cutPasteDirectory(string oldPath, string newPath)
         {
-            if (!Directory.Exists(newPath))
+            if (Directory.Exists(newPath))
             {
-                Directory.Move(oldPath, newPath);
+                Directory.Delete(newPath, true);
             }
+
+            Directory.Move(oldPath, newPath);
         }
 
         private void cutPasteFile(string oldPath, string newPath)
