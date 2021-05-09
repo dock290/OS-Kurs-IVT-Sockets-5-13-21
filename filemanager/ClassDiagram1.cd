@@ -1,24 +1,57 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="filemanager.Form1">
+  <Class Name="filemanager.Main" Collapsed="true">
     <Position X="2.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>RIACIQAAkDIAAAACACCYCAECQQAEIFAAiESBAiAAABA=</HashCode>
-      <FileName>Form1.cs</FileName>
+      <HashCode>QIACoUQViGIABAgUQHiZeuVSSSFEYBoCiFEJQqAAA5A=</HashCode>
+      <FileName>Main.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="filemanager.FileManager">
+  <Class Name="filemanager.FileManager" Collapsed="true">
     <Position X="0.5" Y="0.5" Width="1.5" />
-    <NestedTypes>
-      <Class Name="filemanager.FileManager.Utils" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Form1.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAABAAAAAEACACAAAEQAACAAAAAAAAAAA=</HashCode>
-      <FileName>Form1.cs</FileName>
+      <HashCode>CASBAABAZAACAAUEQEEGACBCAACEQAACAAACQEAAAAY=</HashCode>
+      <FileName>Main.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="filemanager.RecycleBin" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAgAAAACAAA=</HashCode>
+      <FileName>Main.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="filemanager.MainFunctionalInteraction" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAEACAAgAAAAAAAAAAAAAAAgAAAAAAAAAEEAAAAABAA=</HashCode>
+      <FileName>Main.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="filemanager.Minimal" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAKAAAAKAAABAAAQCACAACBAAACAAAgAAAQAAAQAA=</HashCode>
+      <FileName>Minimal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="filemanager.Program" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="filemanager.Properties.Resources" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="filemanager.Properties.Settings" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
