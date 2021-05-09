@@ -47,8 +47,8 @@ namespace MainFunctional
             {
                 listenSocket.Bind(ipPoint);
                 listenSocket.Listen(10);
-                Socket handler = listenSocket.Accept();
 
+                Socket handler = listenSocket.Accept();
                 do
                 {
                     StringBuilder sb = new StringBuilder();
@@ -106,6 +106,8 @@ namespace MainFunctional
                         }
                     }
                 } while (isWorking);
+
+                Application.Exit();
             }
             catch (Exception ex)
             {

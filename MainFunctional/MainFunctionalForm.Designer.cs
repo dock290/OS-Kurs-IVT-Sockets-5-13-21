@@ -62,7 +62,7 @@ namespace MainFunctional
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
             this.listView.ShowGroups = false;
-            this.listView.Size = new System.Drawing.Size(265, 91);
+            this.listView.Size = new System.Drawing.Size(283, 104);
             this.listView.TabIndex = 2;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
@@ -107,7 +107,7 @@ namespace MainFunctional
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(286, 148);
+            this.ClientSize = new System.Drawing.Size(304, 161);
             this.Controls.Add(this.workingSetValueLabel);
             this.Controls.Add(this.workingSetLabel);
             this.Controls.Add(this.cpuTimeValueLabel);
@@ -115,7 +115,7 @@ namespace MainFunctional
             this.Controls.Add(this.cpuTimeLabel);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(302, 187);
+            this.MinimumSize = new System.Drawing.Size(320, 200);
             this.Name = "mainFunctionalForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

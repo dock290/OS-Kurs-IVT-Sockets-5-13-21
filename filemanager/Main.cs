@@ -46,6 +46,13 @@ namespace filemanager
 
         public Main()
         {
+            Process[] processes = Process.GetProcessesByName("MainFunctional");
+            foreach (Process process in processes)
+            {
+                process.Kill();
+            }
+
+
             // Заполнение отношения расширения файла к номеру изображения
             extenstionImageIndexMap.Add(".TXT", TEXT_IMAGE);
             extenstionImageIndexMap.Add(".EXE", EXECUTABLE_IMAGE);
